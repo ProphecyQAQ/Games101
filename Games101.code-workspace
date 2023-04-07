@@ -7,7 +7,26 @@
 	"settings": {
 		"cmake.generator": "MinGW Makefiles",
 		"files.associations": {
-			"eigen": "cpp"
+			"eigen": "cpp",
+			"array": "cpp",
+			"compare": "cpp",
+			"functional": "cpp",
+			"ratio": "cpp",
+			"tuple": "cpp",
+			"type_traits": "cpp",
+			"utility": "cpp",
+			"variant": "cpp",
+			"core": "cpp",
+			"thread": "cpp",
+			"*.ipp": "cpp",
+			"*.tcc": "cpp",
+			"deque": "cpp",
+			"list": "cpp",
+			"string": "cpp",
+			"unordered_map": "cpp",
+			"unordered_set": "cpp",
+			"vector": "cpp",
+			"system_error": "cpp"
 		}
 	}
 }
