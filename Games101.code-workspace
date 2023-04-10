@@ -26,7 +26,11 @@
 			"unordered_map": "cpp",
 			"unordered_set": "cpp",
 			"vector": "cpp",
-			"system_error": "cpp"
+			"system_error": "cpp",
+			"optional": "cpp",
+			"random": "cpp",
+			"cmath": "cpp",
+			"complex": "cpp"
 		}
 	}
 }

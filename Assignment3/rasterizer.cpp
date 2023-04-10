@@ -259,6 +259,42 @@ static Eigen::Vector2f interpolate(float alpha, float beta, float gamma, const E
 //Screen space rasterization
 void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eigen::Vector3f, 3>& view_pos) 
 {
+    auto v = t.toVector4(); //array<Vector4f, 3>
+
+    using namespace std;
+    int mix = min(v[0].x(), min(v[1].x(), v[2].x()));
+    int mxx = max(v[0].x(), max(v[1].x(), v[2].x())) + 1;
+    int miy = min(v[0].y(), min(v[1].y(), v[2].y()));
+    int mxy = max(v[0].y(), max(v[1].y(), v[2].y())) + 1;
+
+    for (int x = mix; x <= mxx; x++) {
+        for (int y = miy; y <= mxy; y++) {
+            int id = get_index(x, y);
+
+            if (insideTriangle(x + 0.5f, y + 0.5f, t.v)) {
+                auto[alpha, beta, gamma] = computeBarycentric2D(x+ 0.5f, y+ 0.5f, t.v);
+
+                float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+
+                float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+                z_interpolated *= w_reciprocal;
+
+                Eigen::Vector3f interpolated_color = alpha * t.color[0] + beta * t.color[1] + gamma * t.color[2];
+                Eigen::Vector3f interpolated_normal = alpha * t.normal[0] + beta * t.normal[1] +gamma * t.normal[2];
+                Eigen::Vector2f interpolated_texcoords = alpha * t.tex_coords[0] + beta * t.tex_coords[1] + gamma * t.tex_coords[2];
+                
+                if (z_interpolated > depth_buf[id]) continue;
+
+                Vector2i p(x, y);
+                fragment_shader_payload payload( interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture? &*texture : nullptr);
+                auto pixel_color = fragment_shader(payload);
+
+                set_pixel(p, pixel_color);
+                depth_buf[id] = z_interpolated;
+            }
+
+        }
+    }
     // TODO: From your HW3, get the triangle rasterization code.
     // TODO: Inside your rasterization loop:
     //    * v[i].w() is the vertex view space depth value z.
