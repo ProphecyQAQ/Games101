@@ -53,7 +53,7 @@ bool Scene::trace(
 Vector3f Scene::castRay(const Ray &ray, int depth) const
 {
     if (depth > this->maxDepth) {
-        return Vector3f(0.0,0.0,0.0);
+        return Vector3f(0.0, 0.0, 0.0);
     }
     Intersection intersection = Scene::intersect(ray);
     Material *m = intersection.m;
